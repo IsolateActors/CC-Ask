@@ -323,6 +323,17 @@ class TemplateManager {
         const templateList = document.getElementById('templateList');
         if (!templateList) return;
         
+        // 保存当前展开的预览状态
+        const expandedPreviews = new Set();
+        document.querySelectorAll('.template-preview').forEach(preview => {
+            if (window.getComputedStyle(preview).display !== 'none') {
+                const card = preview.closest('.template-card');
+                if (card) {
+                    expandedPreviews.add(card.dataset.templateId);
+                }
+            }
+        });
+        
         const filteredTemplates = this.templates.filter(template => 
             template.category === this.currentCategory
         );
@@ -342,6 +353,19 @@ class TemplateManager {
         
         // 设置事件监听
         this.setupTemplateCardEvents();
+        
+        // 恢复预览状态
+        expandedPreviews.forEach(templateId => {
+            const card = document.querySelector(`[data-template-id="${templateId}"]`);
+            if (card) {
+                const preview = card.querySelector('.template-preview');
+                const previewBtn = card.querySelector('[data-action="preview"]');
+                if (preview && previewBtn) {
+                    preview.style.display = 'block';
+                    previewBtn.textContent = '🔼 收起';
+                }
+            }
+        });
     }
     
     createTemplateCard(template) {
@@ -382,10 +406,16 @@ class TemplateManager {
                     </button>
                 </div>
                 <div class="template-preview" style="display: none;">
-                    <pre><code>${template.content}</code></pre>
+                    <pre><code class="template-preview-code">${this.escapeHtml(template.content)}</code></pre>
                 </div>
             </div>
         `;
+    }
+    
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
     
     setupTemplateCardEvents() {
@@ -419,7 +449,20 @@ class TemplateManager {
         const preview = card.querySelector('.template-preview');
         const previewBtn = card.querySelector('[data-action="preview"]');
         
-        if (preview.style.display === 'none') {
+        // 使用getComputedStyle获取实际的display状态，更可靠
+        const isHidden = window.getComputedStyle(preview).display === 'none';
+        
+        if (isHidden) {
+            // 确保预览内容正确设置
+            const templateId = card.dataset.templateId;
+            const template = this.templates.find(t => t.id === templateId);
+            if (template) {
+                const preCode = preview.querySelector('pre code');
+                if (preCode) {
+                    preCode.textContent = template.content;
+                }
+            }
+            
             preview.style.display = 'block';
             previewBtn.textContent = '🔼 收起';
         } else {
@@ -483,8 +526,19 @@ class TemplateManager {
             template.usage++;
             this.saveTemplateUsageStats();
             
-            // 重新渲染以更新使用次数显示
-            this.renderTemplateList();
+            // 只更新特定模板的使用次数显示，避免重新渲染整个列表
+            this.updateTemplateUsageDisplay(templateId);
+        }
+    }
+    
+    updateTemplateUsageDisplay(templateId) {
+        const card = document.querySelector(`[data-template-id="${templateId}"]`);
+        if (card) {
+            const usageSpan = card.querySelector('.template-usage');
+            const template = this.templates.find(t => t.id === templateId);
+            if (usageSpan && template) {
+                usageSpan.textContent = `${template.usage} 次使用`;
+            }
         }
     }
     
@@ -698,6 +752,10 @@ const addTemplateStyles = () => {
             margin-top: 1rem;
             border-top: 1px solid var(--border-light);
             padding-top: 1rem;
+            position: relative;
+            z-index: 1;
+            background: var(--bg-primary);
+            isolation: isolate;
         }
         
         .template-preview pre {

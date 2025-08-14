@@ -27,9 +27,15 @@ class ClipboardManager {
     }
     
     processCodeBlocks() {
-        const codeBlocks = document.querySelectorAll('pre code:not([data-copy-processed])');
+        // 排除模板预览区域的代码块，避免重复处理
+        const codeBlocks = document.querySelectorAll('pre code:not([data-copy-processed]):not(.template-preview-code)');
         
         codeBlocks.forEach(codeElement => {
+            // 再次检查是否在模板预览区域中
+            if (codeElement.closest('.template-preview')) {
+                return;
+            }
+            
             this.addCopyButton(codeElement);
             codeElement.setAttribute('data-copy-processed', 'true');
         });
