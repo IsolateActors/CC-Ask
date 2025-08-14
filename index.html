@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code提问艺术完全指南 v2.0</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1>🎯 Claude Code提问艺术指南</h1>
+                <span class="version-badge">v2.0</span>
+            </div>
+            <div class="nav-actions">
+                <button class="nav-toggle" id="navToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <button class="templates-btn" id="templatesBtn">🚀 模板速查</button>
+                <button class="progress-btn" id="progressBtn">📊 学习进度</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 侧边栏目录 -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>📋 导航目录</h3>
+            <button class="sidebar-close" id="sidebarClose">&times;</button>
+        </div>
+        
+        <div class="toc-container">
+            <!-- 学习导航 -->
+            <div class="toc-section">
+                <h4 class="toc-title" data-target="learning-nav">📋 学习导航</h4>
+                <ul class="toc-list">
+                    <li><a href="#learning-paths" class="toc-link">🎯 学习路径</a></li>
+                    <li><a href="#chapter-overview" class="toc-link">📚 章节概览</a></li>
+                </ul>
+            </div>
+
+            <!-- 第1章 -->
+            <div class="toc-section">
+                <h4 class="toc-title expandable" data-target="chapter-1">
+                    ⚡ 第1章：5分钟快速入门 <span class="expand-icon">▼</span>
+                </h4>
+                <ul class="toc-list">
+                    <li><a href="#core-concept" class="toc-link">💡 核心理念</a></li>
+                    <li><a href="#three-methods" class="toc-link">🎯 三种基本提问方式</a></li>
+                    <li><a href="#universal-template" class="toc-link">🎪 万能启动模板</a></li>
+                    <li><a href="#decision-tree" class="toc-link">📊 决策树</a></li>
+                    <li><a href="#practice-exercises" class="toc-link">🎁 立即实践</a></li>
+                    <li><a href="#checkpoint-1" class="toc-link">✅ 学习检查点</a></li>
+                </ul>
+            </div>
+
+            <!-- 第2章 -->
+            <div class="toc-section">
+                <h4 class="toc-title expandable" data-target="chapter-2">
+                    🛠️ 第2章：完整提问流程 <span class="expand-icon">▼</span>
+                </h4>
+                <ul class="toc-list">
+                    <li><a href="#complete-flow" class="toc-link">🌟 完整协作流程概览</a></li>
+                    <li><a href="#stage-1" class="toc-link">💡 阶段1：项目启动</a></li>
+                    <li><a href="#stage-2" class="toc-link">🔍 阶段2：需求分析</a></li>
+                    <li><a href="#stage-3" class="toc-link">📋 阶段3：技术方案</a></li>
+                    <li><a href="#stage-4" class="toc-link">⚙️ 阶段4：开发执行</a></li>
+                    <li><a href="#stage-5" class="toc-link">🔧 阶段5：问题解决</a></li>
+                    <li><a href="#stage-6" class="toc-link">🚀 阶段6：项目总结</a></li>
+                    <li><a href="#success-factors" class="toc-link">💡 成功因素</a></li>
+                    <li><a href="#checkpoint-2" class="toc-link">✅ 学习检查点</a></li>
+                </ul>
+            </div>
+
+            <!-- 第3章 -->
+            <div class="toc-section">
+                <h4 class="toc-title expandable" data-target="chapter-3">
+                    🧠 第3章：上下文管理专精 <span class="expand-icon">▼</span>
+                </h4>
+                <ul class="toc-list">
+                    <li><a href="#why-context" class="toc-link">💡 为什么需要上下文管理</a></li>
+                    <li><a href="#claude-md" class="toc-link">📝 CLAUDE.md文档体系</a></li>
+                    <li><a href="#session-recovery" class="toc-link">🔄 会话恢复策略</a></li>
+                    <li><a href="#context-demo" class="toc-link">📊 实战演示</a></li>
+                    <li><a href="#context-success" class="toc-link">🎯 成功标准</a></li>
+                    <li><a href="#checkpoint-3" class="toc-link">✅ 学习检查点</a></li>
+                </ul>
+            </div>
+
+            <!-- 第4章 -->
+            <div class="toc-section">
+                <h4 class="toc-title expandable" data-target="chapter-4">
+                    ✨ 第4章：2025新功能应用 <span class="expand-icon">▼</span>
+                </h4>
+                <ul class="toc-list">
+                    <li><a href="#smart-questioning" class="toc-link">💡 从"会问"到"巧问"</a></li>
+                    <li><a href="#slash-commands" class="toc-link">⚡ 斜杠命令</a></li>
+                    <li><a href="#memory-management" class="toc-link">🧠 Memory管理</a></li>
+                    <li><a href="#ide-integration" class="toc-link">💻 IDE集成</a></li>
+                    <li><a href="#agent-analysis" class="toc-link">🤖 Agent深度分析</a></li>
+                    <li><a href="#automation-workflow" class="toc-link">🔄 自动化工作流</a></li>
+                    <li><a href="#learning-roadmap" class="toc-link">💡 学习路线图</a></li>
+                    <li><a href="#efficiency-comparison" class="toc-link">⚡ 效率提升对比</a></li>
+                    <li><a href="#checkpoint-4" class="toc-link">✅ 学习检查点</a></li>
+                </ul>
+            </div>
+
+            <!-- 第5章 -->
+            <div class="toc-section">
+                <h4 class="toc-title expandable" data-target="chapter-5">
+                    💎 第5章：实用工具箱 <span class="expand-icon">▼</span>
+                </h4>
+                <ul class="toc-list">
+                    <li><a href="#project-templates" class="toc-link">🚀 项目启动模板</a></li>
+                    <li><a href="#quick-templates" class="toc-link">⚡ 快速启动模板</a></li>
+                    <li><a href="#problem-solving" class="toc-link">🐛 问题解决模板</a></li>
+                    <li><a href="#advanced-collaboration" class="toc-link">🎯 高级协作模板</a></li>
+                    <li><a href="#new-features-templates" class="toc-link">🔥 2025新功能模板</a></li>
+                    <li><a href="#quick-reference" class="toc-link">📋 快速参考速查</a></li>
+                    <li><a href="#best-practices" class="toc-link">💡 最佳实践</a></li>
+                    <li><a href="#checkpoint-5" class="toc-link">✅ 学习检查点</a></li>
+                </ul>
+            </div>
+
+            <!-- 第6章 -->
+            <div class="toc-section">
+                <h4 class="toc-title expandable" data-target="chapter-6">
+                    💪 第6章：进阶实战练习 <span class="expand-icon">▼</span>
+                </h4>
+                <ul class="toc-list">
+                    <li><a href="#four-levels" class="toc-link">🎯 4级进阶练习体系</a></li>
+                    <li><a href="#success-cases" class="toc-link">🏆 成功案例分享</a></li>
+                    <li><a href="#skill-assessment" class="toc-link">📊 成长路径评估</a></li>
+                    <li><a href="#expert-certification" class="toc-link">🚀 专家认证标准</a></li>
+                    <li><a href="#continuous-growth" class="toc-link">💡 持续成长建议</a></li>
+                    <li><a href="#checkpoint-6" class="toc-link">✅ 学习检查点</a></li>
+                </ul>
+            </div>
+
+            <!-- 结语 -->
+            <div class="toc-section">
+                <h4 class="toc-title" data-target="conclusion">🎯 学习完成与下一步</h4>
+                <ul class="toc-list">
+                    <li><a href="#congratulations" class="toc-link">🏆 恭喜完成学习</a></li>
+                    <li><a href="#start-journey" class="toc-link">🚀 开始AI协作之旅</a></li>
+                    <li><a href="#continuous-path" class="toc-link">📈 持续成长路径</a></li>
+                    <li><a href="#version-update" class="toc-link">📊 v2.0版本更新</a></li>
+                </ul>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <main class="main-content" id="mainContent">
+        <div class="content-container">
+            <!-- 这里将通过JavaScript动态加载Markdown内容 -->
+            <div id="markdownContent">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>正在加载内容...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 浮动工具栏 -->
+    <div class="floating-toolbar" id="floatingToolbar">
+        <button class="fab-btn main-fab" id="mainFab">
+            <span class="fab-icon">+</span>
+        </button>
+        <div class="fab-menu" id="fabMenu">
+            <button class="fab-btn" id="quickTemplateBtn" title="快速模板">
+                <span class="fab-icon">🚀</span>
+            </button>
+            <button class="fab-btn" id="bookmarkBtn" title="书签">
+                <span class="fab-icon">🔖</span>
+            </button>
+            <button class="fab-btn" id="searchBtn" title="搜索">
+                <span class="fab-icon">🔍</span>
+            </button>
+            <button class="fab-btn" id="topBtn" title="回到顶部">
+                <span class="fab-icon">⬆️</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 模板快捷面板 -->
+    <div class="template-panel" id="templatePanel">
+        <div class="panel-header">
+            <h3>🚀 快速模板选择</h3>
+            <button class="panel-close" id="templatePanelClose">&times;</button>
+        </div>
+        <div class="template-categories">
+            <button class="template-category active" data-category="startup">项目启动</button>
+            <button class="template-category" data-category="problem">问题解决</button>
+            <button class="template-category" data-category="advanced">高级协作</button>
+            <button class="template-category" data-category="new-features">2025新功能</button>
+        </div>
+        <div class="template-list" id="templateList">
+            <!-- 这里将动态加载模板列表 -->
+        </div>
+    </div>
+
+    <!-- 搜索面板 -->
+    <div class="search-panel" id="searchPanel">
+        <div class="panel-header">
+            <h3>🔍 搜索内容</h3>
+            <button class="panel-close" id="searchPanelClose">&times;</button>
+        </div>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="搜索章节、模板或关键词...">
+            <button id="searchExecute">搜索</button>
+        </div>
+        <div class="search-results" id="searchResults">
+            <!-- 搜索结果将显示在这里 -->
+        </div>
+    </div>
+
+    <!-- 学习进度面板 -->
+    <div class="progress-panel" id="progressPanel">
+        <div class="panel-header">
+            <h3>📊 学习进度</h3>
+            <button class="panel-close" id="progressPanelClose">&times;</button>
+        </div>
+        <div class="progress-content">
+            <div class="progress-stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="completedChapters">0</span>
+                    <span class="stat-label">已完成章节</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="completedCheckpoints">0</span>
+                    <span class="stat-label">已完成检查点</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="usedTemplates">0</span>
+                    <span class="stat-label">已使用模板</span>
+                </div>
+            </div>
+            <div class="chapter-progress">
+                <h4>章节进度</h4>
+                <div id="chapterProgressList">
+                    <!-- 章节进度列表 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 遮罩层 -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- JavaScript文件 -->
+    <script src="scripts/navigation.js"></script>
+    <script src="scripts/clipboard.js"></script>
+    <script src="scripts/templates.js"></script>
+    <script src="scripts/search.js"></script>
+    <script src="scripts/progress.js"></script>
+    <script src="scripts/main.js"></script>
+</body>
+</html>
