@@ -21,6 +21,7 @@ class NavigationManager {
         this.setupEventListeners();
         this.setupIntersectionObserver();
         this.restoreNavigationState();
+        this.restoreSectionStates();
         this.handleResponsiveChanges();
     }
     
@@ -55,24 +56,28 @@ class NavigationManager {
         // 创建交叉观察器来自动更新导航高亮
         const options = {
             root: null,
-            rootMargin: '-100px 0px -60% 0px', // 调整边距，确保只有当前章节高亮
-            threshold: [0.1, 0.5, 1.0] // 多个阈值，提高检测准确性
+            rootMargin: '-80px 0px -50% 0px', // 优化边距设置，提高滚动响应性
+            threshold: [0, 0.1, 0.3, 0.5, 0.7, 1.0] // 增加更多阈值，提高检测准确性
         };
         
         this.observer = new IntersectionObserver((entries) => {
             // 如果正在手动滚动，忽略交叉观察器的更新
             if (this.isManualScrolling) {
+                console.log('手动滚动中，跳过交叉观察器更新');
                 return;
             }
             
             // 找到最靠近视口顶部的可见标题
             const visibleEntries = entries.filter(entry => entry.isIntersecting);
+            console.log('交叉观察器检测到可见标题:', visibleEntries.map(e => e.target.id));
+            
             if (visibleEntries.length > 0) {
                 // 按距离视口顶部的位置排序，选择最靠前的
                 const sortedEntries = visibleEntries.sort((a, b) => 
                     a.boundingClientRect.top - b.boundingClientRect.top
                 );
                 const topEntry = sortedEntries[0];
+                console.log('选择最靠近顶部的标题:', topEntry.target.id);
                 this.updateActiveNavigation(topEntry.target.id);
             }
         }, options);
@@ -82,18 +87,29 @@ class NavigationManager {
     }
     
     observeHeadings() {
-        // 等待内容加载后观察标题
-        const observer = new MutationObserver(() => {
-            const headings = document.querySelectorAll('h1[id], h2[id], h3[id], h4[id]');
+        const startObserving = () => {
+            const headings = document.querySelectorAll('#markdownContent h1[id], #markdownContent h2[id], #markdownContent h3[id], #markdownContent h4[id]');
             headings.forEach(heading => {
                 this.observer.observe(heading);
             });
+            console.log(`开始观察 ${headings.length} 个标题元素`);
+        };
+        
+        // 立即尝试观察现有标题
+        startObserving();
+        
+        // 等待内容加载后观察新标题
+        const mutationObserver = new MutationObserver(() => {
+            startObserving();
         });
         
-        observer.observe(document.getElementById('markdownContent'), {
-            childList: true,
-            subtree: true
-        });
+        const markdownContent = document.getElementById('markdownContent');
+        if (markdownContent) {
+            mutationObserver.observe(markdownContent, {
+                childList: true,
+                subtree: true
+            });
+        }
     }
     
     toggleSidebar() {
@@ -144,7 +160,7 @@ class NavigationManager {
                 this.isManualScrolling = false;
                 // 滚动结束后确保高亮正确
                 this.updateActiveNavigation(targetId);
-            }, 1000); // 1秒后恢复，确保平滑滚动完成
+            }, 800); // 优化为800ms，提高响应速度
             
             // 移动端点击后关闭侧边栏
             if (this.isSmallScreen) {
@@ -188,6 +204,7 @@ class NavigationManager {
             
             // 滚动到可见区域（仅在非手动滚动时）
             if (!this.isManualScrolling) {
+                console.log('内容滚动触发侧边栏自动滚动:', targetId);
                 this.scrollLinkIntoView(newActiveLink);
             }
             
@@ -213,13 +230,48 @@ class NavigationManager {
     
     scrollLinkIntoView(link) {
         if (this.sidebar && !this.isSmallScreen) {
-            const sidebarRect = this.sidebar.getBoundingClientRect();
+            // 获取侧边栏的滚动容器
+            const tocContainer = this.sidebar.querySelector('.toc-container');
+            if (!tocContainer) {
+                console.warn('未找到 .toc-container');
+                return;
+            }
+            
+            const containerRect = tocContainer.getBoundingClientRect();
             const linkRect = link.getBoundingClientRect();
             
-            if (linkRect.top < sidebarRect.top || linkRect.bottom > sidebarRect.bottom) {
-                link.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center'
+            // 检查链接是否在可视区域内
+            const isLinkVisible = (
+                linkRect.top >= containerRect.top + 20 && 
+                linkRect.bottom <= containerRect.bottom - 20
+            );
+            
+            console.log('侧边栏滚动检查:', {
+                linkText: link.textContent.trim(),
+                isLinkVisible,
+                linkTop: linkRect.top,
+                linkBottom: linkRect.bottom,
+                containerTop: containerRect.top,
+                containerBottom: containerRect.bottom
+            });
+            
+            if (!isLinkVisible) {
+                // 计算需要滚动的距离
+                const linkOffsetTop = link.offsetTop;
+                const containerHeight = containerRect.height;
+                
+                // 将链接滚动到容器的中央位置
+                const targetScrollTop = linkOffsetTop - containerHeight / 2;
+                
+                console.log('执行侧边栏滚动:', {
+                    linkOffsetTop,
+                    containerHeight,
+                    targetScrollTop: Math.max(0, targetScrollTop)
+                });
+                
+                tocContainer.scrollTo({
+                    top: Math.max(0, targetScrollTop),
+                    behavior: 'smooth'
                 });
             }
         }

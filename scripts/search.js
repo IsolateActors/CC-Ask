@@ -255,7 +255,7 @@ class SearchManager {
     
     calculateRelevanceScores(query) {
         const queryLower = query.toLowerCase();
-        const queryWords = queryLower.split(/\\s+/).filter(word => word.length > 0);
+        const queryWords = queryLower.split(/\s+/).filter(word => word.length > 0);
         
         this.searchIndex.forEach(item => {
             let score = 0;
@@ -403,7 +403,7 @@ class SearchManager {
     highlightQuery(text) {
         if (!this.currentQuery) return text;
         
-        const queryWords = this.currentQuery.split(/\\s+/).filter(word => word.length > 0);
+        const queryWords = this.currentQuery.split(/\s+/).filter(word => word.length > 0);
         let highlightedText = text;
         
         queryWords.forEach(word => {
@@ -415,7 +415,7 @@ class SearchManager {
     }
     
     escapeRegex(string) {
-        return string.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&');
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
     
     setupResultClickEvents() {

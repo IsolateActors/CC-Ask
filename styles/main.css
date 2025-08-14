@@ -194,6 +194,9 @@ body {
 
 .toc-container {
     padding: var(--spacing-md);
+    height: calc(100vh - var(--nav-height) - 80px); /* 减去header高度 */
+    overflow-y: auto;
+    scroll-behavior: smooth;
 }
 
 .toc-section {
@@ -657,8 +660,27 @@ body {
 ::-webkit-scrollbar-thumb {
     background: var(--border-medium);
     border-radius: 4px;
+    transition: background var(--transition-fast);
 }
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--border-dark);
+}
+
+/* 侧边栏特定的滚动条样式 */
+.sidebar .toc-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar .toc-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar .toc-container::-webkit-scrollbar-thumb {
+    background: var(--border-light);
+    border-radius: 3px;
+}
+
+.sidebar .toc-container::-webkit-scrollbar-thumb:hover {
+    background: var(--border-medium);
 }
