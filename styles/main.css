@@ -137,7 +137,7 @@ body {
     transition: var(--transition-fast);
 }
 
-.templates-btn, .progress-btn {
+.templates-btn {
     background: var(--primary-color);
     color: var(--text-inverse);
     border: none;
@@ -149,7 +149,7 @@ body {
     font-size: 0.875rem;
 }
 
-.templates-btn:hover, .progress-btn:hover {
+.templates-btn:hover {
     background: var(--primary-hover);
     transform: translateY(-1px);
 }
@@ -448,22 +448,6 @@ body {
     background: var(--bg-secondary);
 }
 
-/* 学习检查点样式 */
-.checkpoint {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-light);
-    border-radius: 0.5rem;
-    padding: var(--spacing-lg);
-    margin: var(--spacing-xl) 0;
-}
-
-.checkpoint h4 {
-    color: var(--success-color);
-    margin-bottom: var(--spacing-md);
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-}
 
 .checklist {
     list-style: none;
@@ -577,7 +561,7 @@ body {
 }
 
 /* ==== 面板通用样式 ==== */
-.template-panel, .search-panel, .progress-panel {
+.template-panel, .search-panel {
     position: fixed;
     top: 0;
     right: -400px;
@@ -590,7 +574,7 @@ body {
     overflow-y: auto;
 }
 
-.template-panel.active, .search-panel.active, .progress-panel.active {
+.template-panel.active, .search-panel.active {
     right: 0;
 }
 

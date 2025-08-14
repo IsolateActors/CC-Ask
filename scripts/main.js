@@ -136,7 +136,6 @@ class ClaudeGuideApp {
             '🎪 万能启动模板': 'universal-template',
             '📊 决策树：我该怎么问？': 'decision-tree',
             '🎁 立即实践：3个练习': 'practice-exercises',
-            '🎯 第1章学习检查点': 'checkpoint-1',
             // 第2章
             '🌟 完整协作流程概览': 'complete-flow',
             '阶段1：项目启动与创意验证 💡': 'stage-1',
@@ -146,14 +145,12 @@ class ClaudeGuideApp {
             '阶段5：问题解决技巧 🔧': 'stage-5',
             '阶段6：项目总结与优化 🚀': 'stage-6',
             '💡 完整流程的关键成功因素': 'success-factors',
-            '🎯 第2章学习检查点': 'checkpoint-2',
             // 第3章
             '💡 为什么需要上下文管理？': 'why-context',
             '📝 CLAUDE.md文档体系 - 项目的大脑': 'claude-md',
             '🔄 会话恢复策略': 'session-recovery',
             '📊 实战演示：完整的上下文管理流程': 'context-demo',
             '🎯 上下文管理的成功标准': 'context-success',
-            '🎯 第3章学习检查点': 'checkpoint-3',
             // 第4章
             '💡 核心理念：从"会问"到"巧问"': 'smart-questioning',
             '⚡ 斜杠命令 - 让提问更简洁': 'slash-commands',
@@ -163,7 +160,6 @@ class ClaudeGuideApp {
             '🔄 自动化工作流 - GitHub Actions增强': 'automation-workflow',
             '💡 2025新功能学习路线图': 'learning-roadmap',
             '⚡ 效率提升对比': 'efficiency-comparison',
-            '🎯 第4章学习检查点': 'checkpoint-4',
             // 第5章
             '🚀 项目启动模板 ⭐': 'project-templates',
             '⚡ 快速启动模板': 'quick-templates',
@@ -172,14 +168,12 @@ class ClaudeGuideApp {
             '🔥 2025新功能专用模板': 'new-features-templates',
             '📋 快速参考速查表': 'quick-reference',
             '💡 模板使用最佳实践': 'best-practices',
-            '🎯 第5章学习检查点': 'checkpoint-5',
             // 第6章
             '🎯 4级进阶练习体系': 'four-levels',
             '🏆 实际项目案例分享': 'success-cases',
             '📊 成长路径评估': 'skill-assessment',
             '🚀 专家认证标准': 'expert-certification',
             '💡 持续成长建议': 'continuous-growth',
-            '🎯 第6章学习检查点': 'checkpoint-6',
             // 结语
             '🏆 恭喜！你已经掌握了Claude Code提问艺术的精髓': 'congratulations',
             '🚀 立即开始你的AI协作之旅': 'start-journey',
@@ -231,10 +225,6 @@ class ClaudeGuideApp {
             this.searchManager = new window.SearchManager();
         }
         
-        // 进度管理器
-        if (window.ProgressManager) {
-            this.progressManager = new window.ProgressManager();
-        }
     }
     
     setupFloatingToolbar() {
@@ -397,7 +387,7 @@ class ClaudeGuideApp {
     }
     
     closeAllPanels() {
-        const panels = document.querySelectorAll('.template-panel, .search-panel, .progress-panel');
+        const panels = document.querySelectorAll('.template-panel, .search-panel');
         const overlay = document.getElementById('overlay');
         
         panels.forEach(panel => panel.classList.remove('active'));
@@ -419,11 +409,6 @@ class ClaudeGuideApp {
             this.closeAllPanels();
         });
         
-        // 监听进度按钮
-        const progressBtn = document.getElementById('progressBtn');
-        progressBtn?.addEventListener('click', () => {
-            this.toggleProgressPanel();
-        });
         
         // 监听模板按钮
         const templatesBtn = document.getElementById('templatesBtn');
@@ -439,32 +424,6 @@ class ClaudeGuideApp {
         });
     }
     
-    toggleProgressPanel() {
-        const panel = document.getElementById('progressPanel');
-        const overlay = document.getElementById('overlay');
-        
-        if (panel && overlay) {
-            const isActive = panel.classList.contains('active');
-            
-            if (isActive) {
-                panel.classList.remove('active');
-                overlay.classList.remove('active');
-            } else {
-                this.closeAllPanels();
-                panel.classList.add('active');
-                overlay.classList.add('active');
-                
-                // 更新进度数据
-                this.updateProgressPanel();
-            }
-        }
-    }
-    
-    updateProgressPanel() {
-        if (this.progressManager) {
-            this.progressManager.updateProgressDisplay();
-        }
-    }
     
     getErrorHTML(message) {
         return `

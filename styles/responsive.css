@@ -20,7 +20,7 @@
         right: var(--spacing-lg);
     }
     
-    .template-panel, .search-panel, .progress-panel {
+    .template-panel, .search-panel {
         width: 350px;
         right: -350px;
     }
@@ -55,7 +55,7 @@
         gap: var(--spacing-sm);
     }
     
-    .templates-btn, .progress-btn {
+    .templates-btn {
         font-size: 0.8rem;
         padding: 0.4rem 0.8rem;
     }
@@ -189,11 +189,6 @@
         min-width: 120px;
     }
     
-    /* 学习检查点移动端适配 */
-    .checkpoint {
-        padding: var(--spacing-md);
-        margin: var(--spacing-lg) 0;
-    }
     
     .checklist li {
         padding: var(--spacing-xs);
@@ -215,7 +210,7 @@
     }
     
     /* 面板移动端适配 */
-    .template-panel, .search-panel, .progress-panel {
+    .template-panel, .search-panel {
         width: 100%;
         right: -100%;
     }
@@ -248,10 +243,6 @@
         padding: 0.2rem 0.4rem;
     }
     
-    .progress-btn {
-        font-size: 0.75rem;
-        padding: 0.35rem 0.6rem;
-    }
     
     .content-container {
         padding: var(--spacing-md);
@@ -304,9 +295,6 @@
         font-size: 1rem;
     }
     
-    .checkpoint {
-        padding: var(--spacing-sm);
-    }
     
     .checklist li {
         font-size: 0.85rem;
@@ -365,7 +353,7 @@
         box-shadow: 0 2px 4px -1px rgb(0 0 0 / 0.06);
     }
     
-    .template-panel, .search-panel, .progress-panel {
+    .template-panel, .search-panel {
         box-shadow: -8px 0 32px -8px rgb(0 0 0 / 0.12);
     }
 }
