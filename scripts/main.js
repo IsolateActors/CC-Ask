@@ -91,13 +91,13 @@ class ClaudeGuideApp {
         // 预处理Markdown内容，修复格式问题
         return markdown
             // 确保代码块正确格式化
-            .replace(/```([^\\n]*?)\\n([\\s\\S]*?)```/g, '```$1\n$2\n```')
+            .replace(/```([^\n]*?)\n([\s\S]*?)```/g, '```$1\n$2\n```')
             // 修复表格格式
-            .replace(/\\|/g, '|')
+            .replace(/\\\|/g, '|')
             // 确保标题前有空行
-            .replace(/([^\\n])\\n(#{1,6}\\s)/g, '$1\n\n$2')
+            .replace(/([^\n])\n(#{1,6}\s)/g, '$1\n\n$2')
             // 清理多余的空行
-            .replace(/\\n{3,}/g, '\n\n');
+            .replace(/\n{3,}/g, '\n\n');
     }
     
     postprocessHTML(html) {
@@ -105,11 +105,11 @@ class ClaudeGuideApp {
         return html
             // 为表格添加包装器
             .replace(/<table>/g, '<div class="table-wrapper"><table>')
-            .replace(/<\\/table>/g, '</table></div>')
+            .replace(/<\/table>/g, '</table></div>')
             // 为图片添加懒加载
-            .replace(/<img([^>]*?)src="([^"]*?)"([^>]*?)>/g, '<img$1data-src="$2" src="data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'1\\' height=\\'1\\'%3E%3C/svg%3E"$3 loading="lazy">')
+            .replace(/<img([^>]*?)src="([^"]*?)"([^>]*?)>/g, '<img$1data-src="$2" src="data:image/svg+xml,%3Csvg xmlns=\\"http://www.w3.org/2000/svg\\" width=\\"1\\" height=\\"1\\"%3E%3C/svg%3E"$3 loading="lazy">')
             // 为外部链接添加target="_blank"
-            .replace(/<a href="(https?:\\/\\/[^"]*?)"([^>]*?)>/g, '<a href="$1" target="_blank" rel="noopener noreferrer"$2>');
+            .replace(/<a href="(https?:\/\/[^"]*?)"([^>]*?)>/g, '<a href="$1" target="_blank" rel="noopener noreferrer"$2>');
     }
     
     addIdsToHeadings() {
@@ -125,11 +125,78 @@ class ClaudeGuideApp {
     }
     
     generateIdFromText(text) {
+        // 预定义的ID映射，确保与导航链接匹配
+        const idMap = {
+            // 学习导航
+            '🎯 完整学习路径': 'learning-paths',
+            '📚 章节概览': 'chapter-overview',
+            // 第1章
+            '💡 核心理念：让AI做你的专业顾问': 'core-concept',
+            '🎯 三种基本提问方式': 'three-methods',
+            '🎪 万能启动模板': 'universal-template',
+            '📊 决策树：我该怎么问？': 'decision-tree',
+            '🎁 立即实践：3个练习': 'practice-exercises',
+            '🎯 第1章学习检查点': 'checkpoint-1',
+            // 第2章
+            '🌟 完整协作流程概览': 'complete-flow',
+            '阶段1：项目启动与创意验证 💡': 'stage-1',
+            '阶段2：需求分析与文档化 🔍': 'stage-2',
+            '阶段3：技术方案制定 📋': 'stage-3',
+            '阶段4：开发执行协作 ⚙️': 'stage-4',
+            '阶段5：问题解决技巧 🔧': 'stage-5',
+            '阶段6：项目总结与优化 🚀': 'stage-6',
+            '💡 完整流程的关键成功因素': 'success-factors',
+            '🎯 第2章学习检查点': 'checkpoint-2',
+            // 第3章
+            '💡 为什么需要上下文管理？': 'why-context',
+            '📝 CLAUDE.md文档体系 - 项目的大脑': 'claude-md',
+            '🔄 会话恢复策略': 'session-recovery',
+            '📊 实战演示：完整的上下文管理流程': 'context-demo',
+            '🎯 上下文管理的成功标准': 'context-success',
+            '🎯 第3章学习检查点': 'checkpoint-3',
+            // 第4章
+            '💡 核心理念：从"会问"到"巧问"': 'smart-questioning',
+            '⚡ 斜杠命令 - 让提问更简洁': 'slash-commands',
+            '🧠 Memory管理 - AI永远记住你的项目': 'memory-management',
+            '💻 IDE集成 - 编程环境的自然延伸': 'ide-integration',
+            '🤖 Agent深度分析 - 专业问题的一站式解决': 'agent-analysis',
+            '🔄 自动化工作流 - GitHub Actions增强': 'automation-workflow',
+            '💡 2025新功能学习路线图': 'learning-roadmap',
+            '⚡ 效率提升对比': 'efficiency-comparison',
+            '🎯 第4章学习检查点': 'checkpoint-4',
+            // 第5章
+            '🚀 项目启动模板 ⭐': 'project-templates',
+            '⚡ 快速启动模板': 'quick-templates',
+            '🐛 问题解决模板': 'problem-solving',
+            '🎯 高级协作模板': 'advanced-collaboration',
+            '🔥 2025新功能专用模板': 'new-features-templates',
+            '📋 快速参考速查表': 'quick-reference',
+            '💡 模板使用最佳实践': 'best-practices',
+            '🎯 第5章学习检查点': 'checkpoint-5',
+            // 第6章
+            '🎯 4级进阶练习体系': 'four-levels',
+            '🏆 实际项目案例分享': 'success-cases',
+            '📊 成长路径评估': 'skill-assessment',
+            '🚀 专家认证标准': 'expert-certification',
+            '💡 持续成长建议': 'continuous-growth',
+            '🎯 第6章学习检查点': 'checkpoint-6',
+            // 结语
+            '🏆 恭喜！你已经掌握了Claude Code提问艺术的精髓': 'congratulations',
+            '🚀 立即开始你的AI协作之旅': 'start-journey',
+            '📈 持续成长路径': 'continuous-path',
+            '📊 v2.0版本更新说明': 'version-update'
+        };
+        
+        // 检查是否有预定义的映射
+        if (idMap[text]) {
+            return idMap[text];
+        }
+        
         // 从文本生成URL友好的ID
         return text
             .toLowerCase()
-            .replace(/[^\\w\\s\\u4e00-\\u9fff-]/g, '') // 保留中文、英文、数字、连字符
-            .replace(/\\s+/g, '-') // 空格替换为连字符
+            .replace(/[^\w\s\u4e00-\u9fff-]/g, '') // 保留中文、英文、数字、连字符
+            .replace(/\s+/g, '-') // 空格替换为连字符
             .replace(/^-+|-+$/g, '') // 移除开头和结尾的连字符
             .substring(0, 50); // 限制长度
     }

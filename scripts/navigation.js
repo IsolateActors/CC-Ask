@@ -11,6 +11,8 @@ class NavigationManager {
         
         this.currentActiveLink = null;
         this.isSmallScreen = window.innerWidth <= 768;
+        this.isManualScrolling = false; // 标记是否是手动点击滚动
+        this.manualScrollTimer = null;
         
         this.init();
     }
@@ -53,16 +55,26 @@ class NavigationManager {
         // 创建交叉观察器来自动更新导航高亮
         const options = {
             root: null,
-            rootMargin: '-80px 0px -80px 0px',
-            threshold: 0.1
+            rootMargin: '-100px 0px -60% 0px', // 调整边距，确保只有当前章节高亮
+            threshold: [0.1, 0.5, 1.0] // 多个阈值，提高检测准确性
         };
         
         this.observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    this.updateActiveNavigation(entry.target.id);
-                }
-            });
+            // 如果正在手动滚动，忽略交叉观察器的更新
+            if (this.isManualScrolling) {
+                return;
+            }
+            
+            // 找到最靠近视口顶部的可见标题
+            const visibleEntries = entries.filter(entry => entry.isIntersecting);
+            if (visibleEntries.length > 0) {
+                // 按距离视口顶部的位置排序，选择最靠前的
+                const sortedEntries = visibleEntries.sort((a, b) => 
+                    a.boundingClientRect.top - b.boundingClientRect.top
+                );
+                const topEntry = sortedEntries[0];
+                this.updateActiveNavigation(topEntry.target.id);
+            }
         }, options);
         
         // 观察所有具有ID的标题元素
@@ -113,8 +125,26 @@ class NavigationManager {
         const targetId = e.target.getAttribute('href')?.substring(1);
         
         if (targetId) {
-            this.scrollToSection(targetId);
+            // 标记开始手动滚动
+            this.isManualScrolling = true;
+            
+            // 清除之前的定时器
+            if (this.manualScrollTimer) {
+                clearTimeout(this.manualScrollTimer);
+            }
+            
+            // 立即更新导航高亮
             this.updateActiveNavigation(targetId);
+            
+            // 开始滚动
+            this.scrollToSection(targetId);
+            
+            // 设置定时器，滚动完成后恢复观察器
+            this.manualScrollTimer = setTimeout(() => {
+                this.isManualScrolling = false;
+                // 滚动结束后确保高亮正确
+                this.updateActiveNavigation(targetId);
+            }, 1000); // 1秒后恢复，确保平滑滚动完成
             
             // 移动端点击后关闭侧边栏
             if (this.isSmallScreen) {
@@ -140,6 +170,8 @@ class NavigationManager {
     }
     
     updateActiveNavigation(targetId) {
+        if (!targetId) return;
+        
         // 移除之前的活动状态
         if (this.currentActiveLink) {
             this.currentActiveLink.classList.remove('active');
@@ -154,8 +186,15 @@ class NavigationManager {
             // 确保父级章节展开
             this.ensureParentExpanded(newActiveLink);
             
-            // 滚动到可见区域
-            this.scrollLinkIntoView(newActiveLink);
+            // 滚动到可见区域（仅在非手动滚动时）
+            if (!this.isManualScrolling) {
+                this.scrollLinkIntoView(newActiveLink);
+            }
+            
+            // 调试信息
+            console.log('导航高亮已更新:', targetId, newActiveLink.textContent.trim());
+        } else {
+            console.warn('未找到对应的导航链接:', targetId);
         }
     }
     

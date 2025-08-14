@@ -21,17 +21,21 @@ class CustomHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     
     def guess_type(self, path):
         mimetype = super().guess_type(path)
-        # 确保JavaScript文件有正确的MIME类型
+        # 确保JavaScript文件有正确的MIME类型和编码
         if path.endswith('.js'):
-            return 'application/javascript'
+            return 'application/javascript; charset=utf-8'
         elif path.endswith('.css'):
-            return 'text/css'
+            return 'text/css; charset=utf-8'
         elif path.endswith('.md'):
-            return 'text/markdown'
+            return 'text/markdown; charset=utf-8'
+        elif path.endswith('.html'):
+            return 'text/html; charset=utf-8'
+        elif mimetype and mimetype.startswith('text/'):
+            return f'{mimetype}; charset=utf-8'
         return mimetype
 
 def main():
-    PORT = 8000
+    PORT = 8083
     
     # 确保在项目根目录启动
     project_root = Path(__file__).parent
